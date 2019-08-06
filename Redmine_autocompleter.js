@@ -7,12 +7,10 @@
 // @run-at document-body
 // ==/UserScript==
 
-
 // объявлем нужные переменные
 var status = 7, // это статус "протестировать"
     readiness = 100, // это готовность "100%"
     development = 9; // это деятельность "разработка"
-
 
 // ф-ия для простановки нужных значений в выпадающих списках
 var setValue = function(elementID, valueToSelect){
