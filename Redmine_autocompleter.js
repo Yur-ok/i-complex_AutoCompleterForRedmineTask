@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         AutoCompleterForRedmine
-// @version      0.1
+// @version      0.3
 // @description  Complete task in Redmine
 // @author       YuriyB
 // @match        http://ic-engine.ru/issues/*
