@@ -1,17 +1,20 @@
 // ==UserScript==
 // @name         AutoCompleterForRedmine
-// @version      0.3
+// @version      0.4
 // @description  Complete task in Redmine
 // @author       YuriyB
 // @match        http://ic-engine.ru/issues/*
 // @run-at document-body
 // ==/UserScript==
+
+
 // объявлем нужные переменные
 var status = 7, // это статус "протестировать"
     readiness = 100, // это готовность "100%"
     development = 9; // это деятельность "разработка"
 
-// ф-ия для простановки нужных значений
+
+// ф-ия для простановки нужных значений в выпадающих списках
 var setValue = function(elementID, valueToSelect){
     var element = document.getElementById(elementID);
     var option = element.options;
@@ -24,7 +27,20 @@ var setValue = function(elementID, valueToSelect){
     }
 };
 
+// ф-ия для заполнения времени и описания
+let fillInput = function(elementID, taskInput){
+    let element = document.getElementById(elementID);
+    if(element.value !== null){
+        taskInput.value = element.value;
+    };
+};
+
+// действия выполняемы после нажатия на кнопку Complete
 let closeTask = function(){
+    let taskTime = document.getElementById("time_entry_hours"), // поле для ввода времени в Redmine
+        taskDesc = document.getElementById("issue_notes"), // поле для ввода описания
+        timeForFill = document.getElementById("spended_time").value, // значение поля времени из доп. формы
+        descForFill = document.getElementById("desc_for_fill").value; // значение поля описания из доп. формы
     // Находим кнопку "обновить"
     document.links[35].click();
     // Меняем статус задачи на "Протестировать"
@@ -35,34 +51,35 @@ let closeTask = function(){
     setValue("time_entry_activity_id", development);
     // Ставим время
     // если время передано, тогда указываем его иначе оставляем поле пустым
-    let timeSpent = document.getElementById("spended_time").value;
-    let taskTime = document.getElementById("time_entry_hours");
-    if (timeSpent !== null) {
-        taskTime.value = timeSpent;
+    if (timeForFill !== null) {
+        taskTime.value = timeForFill;
     }
+    // добавляем описание
+    if (descForFill !== null) {
+        taskDesc.value = descForFill;
+    };
     // Нажимаем "Принять"
     document.getElementsByName("commit")[1].click();
 };
-
-let switchButton = function(){
+// проверка на то, что время указано и после этого разблокируется кнопка иначе кнопка отключена
+// ПОКА НЕ ИСПОЛЬЗУЕТСЯ
+/* let switchButton = function(){
     var btn = document.getElementById("complete"),
         input = document.getElementById("spended_time");
     if(input.value){
         btn.removeAttribute("disabled");
     };
-};
-
+}; */
+// отрисовка формы
 (function run() {
     'use strict';
-    // Your code here...
-    // создаем элементы
-    // создаем контейнер и стилизуем его
+    // создаем контейнер с элементами и стилизуем его
     let forma = document.createElement("div");
     forma.style.position = "absolute";
     forma.style.top = "30px";
-    forma.style.left = "40%";
-    forma.style.width = "200px";
-    forma.style.padding = "5px";
+    forma.style.left = "30%";
+    forma.style.width = "400px";
+    forma.style.padding = "2px";
     forma.style.display = "flex";
     forma.style.flexDirection = "column";
     forma.style.justifyContent = "space-around";
@@ -70,18 +87,20 @@ let switchButton = function(){
     forma.setAttribute("id", "forma");
     let inputTime = document.createElement("input");
     inputTime.style.paddingLeft = "5px";
-    inputTime.style.marginBottom = "5px";
+    inputTime.style.marginBottom = "2px";
     inputTime.setAttribute("placeholder", "Time");
     inputTime.setAttribute("id", "spended_time");
     inputTime.setAttribute("autofocus", "");
-/*     inputTime.addEventListener("onchange", switchButton); */
+    /*     inputTime.addEventListener("onchange", switchButton); */
     let inputDesc = document.createElement("textarea");
     inputDesc.style.padding = "5px";
     inputDesc.setAttribute("placeholder", "Description");
+    inputDesc.setAttribute("id", "desc_for_fill");
+    inputDesc.style.marginBottom = "2px";
     let completeButton = document.createElement("button");
     completeButton.innerHTML = "Complete";
     completeButton.setAttribute("id", "complete");
-/*     completeButton.setAttribute("disabled", ""); */
+    /*     completeButton.setAttribute("disabled", ""); */
     completeButton.addEventListener("click", closeTask);
     // объединяем их
     forma.append(inputTime, inputDesc, completeButton);
