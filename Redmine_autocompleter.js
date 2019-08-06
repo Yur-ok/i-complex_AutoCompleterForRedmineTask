@@ -1,41 +1,58 @@
 // ==UserScript==
-// @name         Auto completer for Redmine
+// @name         AutoCompleterForRedmine
 // @version      0.1
 // @description  Complete task in Redmine
 // @author       YuriyB
 // @match        http://ic-engine.ru/issues/*
 // @run-at document-body
 // ==/UserScript==
+// объявлем нужные переменные
+var status = 7, // это статус "протестировать"
+    readiness = 100, // это готовность "100%"
+    development = 9; // это деятельность "разработка"
 
-let closeTask = function(time = null){
-    console.log('work!');
-    // Находим кнопку "обновить"
-    /*     let taskPath = location.pathname + '/edit';
-    taskPath.click(); */
-    document.links[35].click();
-    // Меняем статус задачи на "Протестировать"
-    let issueStatusID = document.getElementById("issue_status_id");
-    issueStatusID.options[0].removeAttribute("selected");
-    issueStatusID.options[4].setAttribute("selected", "selected");
-    // Меняем "готовность" на 100%
-    let issueDoneRatio = document.getElementById("issue_done_ratio");
-    issueDoneRatio.options[0].removeAttribute("selected");
-    issueDoneRatio.options[10].setAttribute("selected", "selected");
-    // Меняем деятельность на "Разработка"
-    let timeEntryActivity = document.getElementById("time_entry_activity_id");
-    timeEntryActivity.options[2].setAttribute("selected", "selected");
-    // Ставим время
-    // здесь надо добавить условие, если время передано, тогда указываем его иначе оставляем поле пустым
-    let timeSpent = document.getElementById("time_entry_hours");
-    if (time !== null) {
-        timeSpent.value = time;
+// ф-ия для простановки нужных значений
+var setValue = function(elementID, valueToSelect){
+    var element = document.getElementById(elementID);
+    var option = element.options;
+    option[0].removeAttribute("selected");
+    for (var i = 1; i < option.length; i++) {
+        if (option[i].value == valueToSelect){
+            option[i].setAttribute("selected", "selected");
+            break;
+        }
     }
-    // Нажимаем "Принять"
-    let save = document.querySelectorAll("input");
-    save[save.length-1].click();
 };
 
-function run() {
+let closeTask = function(){
+    // Находим кнопку "обновить"
+    document.links[35].click();
+    // Меняем статус задачи на "Протестировать"
+    setValue("issue_status_id", status);
+    // Меняем "готовность" на 100%
+    setValue("issue_done_ratio", readiness);
+    // Меняем деятельность на "Разработка"
+    setValue("time_entry_activity_id", development);
+    // Ставим время
+    // если время передано, тогда указываем его иначе оставляем поле пустым
+    let timeSpent = document.getElementById("spended_time").value;
+    let taskTime = document.getElementById("time_entry_hours");
+    if (timeSpent !== null) {
+        taskTime.value = timeSpent;
+    }
+    // Нажимаем "Принять"
+    document.getElementsByName("commit")[1].click();
+};
+
+let switchButton = function(){
+    var btn = document.getElementById("complete"),
+        input = document.getElementById("spended_time");
+    if(input.value){
+        btn.removeAttribute("disabled");
+    };
+};
+
+(function run() {
     'use strict';
     // Your code here...
     // создаем элементы
@@ -55,18 +72,19 @@ function run() {
     inputTime.style.paddingLeft = "5px";
     inputTime.style.marginBottom = "5px";
     inputTime.setAttribute("placeholder", "Time");
+    inputTime.setAttribute("id", "spended_time");
     inputTime.setAttribute("autofocus", "");
+/*     inputTime.addEventListener("onchange", switchButton); */
     let inputDesc = document.createElement("textarea");
     inputDesc.style.padding = "5px";
     inputDesc.setAttribute("placeholder", "Description");
     let completeButton = document.createElement("button");
     completeButton.innerHTML = "Complete";
     completeButton.setAttribute("id", "complete");
-    /*     completeButton.setAttribute("onclick", "closeTask(" + inputTime.value + ")"); */
+/*     completeButton.setAttribute("disabled", ""); */
     completeButton.addEventListener("click", closeTask);
     // объединяем их
     forma.append(inputTime, inputDesc, completeButton);
     // добавлем его в body
     document.body.append(forma);
-};
-run();
+})();
