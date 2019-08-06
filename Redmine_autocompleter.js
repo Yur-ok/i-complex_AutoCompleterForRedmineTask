@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         AutoCompleterForRedmine
-// @version      0.4
+// @version      0.5
 // @description  Complete task in Redmine
 // @author       YuriyB
 // @match        http://ic-engine.ru/issues/*
@@ -60,14 +60,13 @@ let closeTask = function(){
     document.getElementsByName("commit")[1].click();
 };
 // проверка на то, что время указано и после этого разблокируется кнопка иначе кнопка отключена
-// ПОКА НЕ ИСПОЛЬЗУЕТСЯ
-/* let switchButton = function(){
+let switchButton = function(){
     var btn = document.getElementById("complete"),
         input = document.getElementById("spended_time");
     if(input.value){
         btn.removeAttribute("disabled");
     };
-}; */
+};
 // отрисовка формы
 (function run() {
     'use strict';
@@ -89,7 +88,7 @@ let closeTask = function(){
     inputTime.setAttribute("placeholder", "Time");
     inputTime.setAttribute("id", "spended_time");
     inputTime.setAttribute("autofocus", "");
-    /*     inputTime.addEventListener("onchange", switchButton); */
+        inputTime.addEventListener("focusout", switchButton);
     let inputDesc = document.createElement("textarea");
     inputDesc.style.padding = "5px";
     inputDesc.setAttribute("placeholder", "Description");
@@ -98,7 +97,7 @@ let closeTask = function(){
     let completeButton = document.createElement("button");
     completeButton.innerHTML = "Complete";
     completeButton.setAttribute("id", "complete");
-    /*     completeButton.setAttribute("disabled", ""); */
+        completeButton.setAttribute("disabled", "");
     completeButton.addEventListener("click", closeTask);
     // объединяем их
     forma.append(inputTime, inputDesc, completeButton);
