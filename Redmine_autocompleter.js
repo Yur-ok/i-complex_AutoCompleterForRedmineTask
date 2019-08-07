@@ -64,7 +64,7 @@ let switchButton = function(){
     var btn = document.getElementById("complete"),
         input = document.getElementById("spended_time");
     if(input.value){
-        btn.removeAttribute("disabled");
+        btn.style.display = "block";
     };
 };
 // отрисовка формы
@@ -73,7 +73,7 @@ let switchButton = function(){
     // создаем контейнер с элементами и стилизуем его
     let forma = document.createElement("div");
     forma.style.position = "absolute";
-    forma.style.top = "30px";
+    forma.style.top = "0px";
     forma.style.left = "30%";
     forma.style.width = "400px";
     forma.style.padding = "2px";
@@ -88,7 +88,7 @@ let switchButton = function(){
     inputTime.setAttribute("placeholder", "Time");
     inputTime.setAttribute("id", "spended_time");
     inputTime.setAttribute("autofocus", "");
-        inputTime.addEventListener("focusout", switchButton);
+    inputTime.addEventListener("focusout", switchButton);
     let inputDesc = document.createElement("textarea");
     inputDesc.style.padding = "5px";
     inputDesc.setAttribute("placeholder", "Description");
@@ -97,7 +97,7 @@ let switchButton = function(){
     let completeButton = document.createElement("button");
     completeButton.innerHTML = "Complete";
     completeButton.setAttribute("id", "complete");
-        completeButton.setAttribute("disabled", "");
+    completeButton.style.display = "none";
     completeButton.addEventListener("click", closeTask);
     // объединяем их
     forma.append(inputTime, inputDesc, completeButton);
