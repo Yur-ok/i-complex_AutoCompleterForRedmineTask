@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AutoCompleterForRedmine
 // @version      0.5
-// @description  Complete task in Redmine
+// @description  Complete task in Redmine "i-complex"
 // @author       YuriyB
 // @match        http://ic-engine.ru/issues/*
 // @run-at document-body
@@ -10,7 +10,8 @@
 // объявлем нужные переменные
 var status = 7, // это статус "протестировать"
     readiness = 100, // это готовность "100%"
-    development = 9; // это деятельность "разработка"
+    development = 9, // это деятельность "разработка"
+    kaizen = '#kaizen#';
 
 // ф-ия для простановки нужных значений в выпадающих списках
 var setValue = function(elementID, valueToSelect){
@@ -88,7 +89,14 @@ let switchButton = function(){
     inputTime.setAttribute("placeholder", "Time");
     inputTime.setAttribute("id", "spended_time");
     inputTime.setAttribute("autofocus", "");
+    inputTime.setAttribute("maxlength", "5");
     inputTime.addEventListener("focusout", switchButton);
+    inputTime.addEventListener("keyup", function(){
+        let input = this.value;
+        if (input.length == 2){
+            this.value = input + ':';
+        };
+    });
     let inputDesc = document.createElement("textarea");
     inputDesc.style.padding = "5px";
     inputDesc.setAttribute("placeholder", "Description");
