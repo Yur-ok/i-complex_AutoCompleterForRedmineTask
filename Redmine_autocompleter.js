@@ -86,13 +86,20 @@ let switchButton = function(){
     let inputTime = document.createElement("input");
     inputTime.style.paddingLeft = "5px";
     inputTime.style.marginBottom = "2px";
-    inputTime.setAttribute("placeholder", "Time");
+    inputTime.setAttribute("placeholder", "Time in format 99:59");
     inputTime.setAttribute("id", "spended_time");
     inputTime.setAttribute("autofocus", "");
     inputTime.setAttribute("maxlength", "5");
     inputTime.addEventListener("focusout", switchButton);
     inputTime.addEventListener("keyup", function(){
         let input = this.value;
+        let result = '';
+        result += this.value;
+        if (/(^\d$)|(^\d\d$)|(^\d\d:$)|(\d\d:[0-5]$)|(^\d\d:[0-5][0-9]$)/.test(result)){
+            this.value = result;
+        } else {
+            this.value = '';
+        };
         if (input.length == 2){
             this.value = input + ':';
         };
